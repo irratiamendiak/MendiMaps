@@ -22,6 +22,7 @@
 <div class="section"><h3>Elementos</h3><div id="featureList" class="feature-list">Todavía no hay elementos.</div></div>
 </aside><main class="mapwrap"><div id="map"></div><div class="maptools"><button class="primary" id="gpsBtnM">◎ GPS</button><button id="trackBtnM">● Grabar</button><button id="pointBtnM">＋ Punto</button><button id="lineBtnM">／ Línea</button><button id="polyBtnM">⬡ Área</button><button id="measureGpsBtnM">◎ Medir andando</button><button class="panel-toggle" id="panelBtnM">☰ Menú</button></div><div class="gps-readout" id="gpsReadout">GPS: sin lectura</div><div class="navtools" aria-label="Controles del mapa"><button id="centerGpsBtn" class="primary" title="Centrar en mi posición" aria-label="Centrar en mi posición">◎</button><div class="navlabel">MI POSICIÓN</div><button id="followGpsBtn" title="Seguir mi posición" aria-label="Seguir mi posición">➤</button><button id="zoomInBtn" title="Acercar" aria-label="Acercar">＋</button><button id="zoomOutBtn" title="Alejar" aria-label="Alejar">−</button></div><div class="hint" id="hint">Activa el GPS o selecciona una herramienta para empezar</div></main></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<script src="offline.js"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);const map=L.map('map').setView([43.15,-2.15],10);
