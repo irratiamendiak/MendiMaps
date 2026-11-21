@@ -1,0 +1,59 @@
+/* MendiMaps · interfaz 0.6 — controles flotantes. Enlazar al final del <head>, después del <style> existente. */
+:root{--glass:#fffffff2;--shadow:0 6px 20px #0b1f1b38,0 1px 3px #0b1f1b30}
+header{background:linear-gradient(180deg,#1c4b42,#173b35);box-shadow:0 2px 12px #0b1f1b45}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:30px;height:30px;flex:none}
+.brand small{margin-top:1px}
+.status{background:#ffffff14;border-color:#ffffff30;font-variant-numeric:tabular-nums}
+aside .btn{border-radius:12px;box-shadow:0 1px 2px #0b1f1b14}
+.maptools,.navtools{display:none!important}
+.hid{display:none!important}
+.hint{top:12px;bottom:auto;max-width:calc(100% - 140px);background:#10302bf0;backdrop-filter:blur(6px);font-weight:500}
+.gps-readout{top:auto;right:auto;bottom:16px;left:50%;transform:translateX(-50%);max-width:calc(100% - 170px);text-align:center;border-radius:20px;font-variant-numeric:tabular-nums;backdrop-filter:blur(6px)}
+
+.fab{position:absolute;z-index:470;width:48px;height:48px;border:0;border-radius:50%;background:var(--glass);color:#173b35;display:grid;place-items:center;box-shadow:var(--shadow);cursor:pointer;transition:transform .18s,background .18s,color .18s;-webkit-tap-highlight-color:transparent;padding:0}
+.fab svg,.pill svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fab:active{transform:scale(.92)}
+.fab.on{background:#173b35;color:#d8ed9b}
+.col{position:absolute;z-index:470;display:flex;flex-direction:column;gap:10px;right:12px}
+.col .fab{position:static}
+#uTop{top:12px}
+#uMid{top:50%;transform:translateY(-50%)}
+#uTop:has(#uInstall:not(.hid)) ~ #uMid{top:58%}
+
+#uRec{left:12px;bottom:14px;width:58px;height:58px;color:#d64535}
+#uRec.on{background:#d64535;color:#fff;animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 #d6453588,var(--shadow)}70%{box-shadow:0 0 0 14px #d6453500,var(--shadow)}100%{box-shadow:0 0 0 0 #d6453500,var(--shadow)}}
+
+#uDial{position:absolute;right:12px;bottom:14px;z-index:480}
+#uDial .fab.main{position:relative;width:58px;height:58px;background:#d8ed9b}
+#uDial .fab.main svg{transition:transform .25s}
+#uDial.open .fab.main svg{transform:rotate(135deg)}
+.dial-items{position:absolute;right:5px;bottom:70px;display:flex;flex-direction:column-reverse;gap:10px;align-items:flex-end}
+.item{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;opacity:0;transform:translateY(12px) scale(.92);pointer-events:none;transition:opacity .16s,transform .22s;transition-delay:calc(var(--i)*35ms)}
+.item span{background:var(--glass);padding:7px 11px;border-radius:10px;font:600 12px system-ui,sans-serif;color:var(--ink);box-shadow:var(--shadow);white-space:nowrap}
+.item .fab{position:static;width:44px;height:44px}
+#uDial.open .item{opacity:1;transform:none;pointer-events:auto}
+
+.pill{position:absolute;z-index:480;left:50%;bottom:62px;display:flex;align-items:center;gap:8px;border:0;border-radius:24px;padding:11px 18px;background:#d8ed9b;color:#173b35;font:700 13px system-ui,sans-serif;box-shadow:var(--shadow);cursor:pointer;opacity:0;transform:translate(-50%,14px);pointer-events:none;transition:opacity .2s,transform .25s}
+.pill.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+
+.sheet{position:absolute;z-index:650;left:8px;right:8px;bottom:8px;margin:0 auto;max-width:440px;background:#fff;border-radius:20px;padding:14px 14px 16px;box-shadow:0 10px 40px #0b1f1b55;transform:translateY(115%);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.sheet.open{transform:none;opacity:1;pointer-events:auto}
+.sheet h4{margin:0 0 12px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+.sheet h4 button{border:0;background:#eef2ec;border-radius:50%;width:30px;height:30px;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.sheet h4 svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.maps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mapcard{border:2px solid transparent;background:#f4f6f2;border-radius:14px;padding:6px;font:600 12px system-ui,sans-serif;color:var(--ink);cursor:pointer;text-align:center}
+.mapcard i{display:block;height:54px;border-radius:9px;margin-bottom:6px}
+.mapcard small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.mapcard.sel{border-color:#24584e;background:#eef6e0}
+.sw-osm{background:linear-gradient(135deg,#e9efe3 0 40%,#fff 40% 46%,#cfe0c4 46%)}
+.sw-ign{background:linear-gradient(135deg,#e6dcb5,#c9d7a0 60%,#b8cf9d)}
+.sw-gipuzkoaOrtho{background:linear-gradient(135deg,#46583a,#2b3a26 55%,#5d6b44)}
+.swrow{display:flex;align-items:center;justify-content:space-between;margin:14px 0 6px;font-weight:600}
+.swrow input{width:20px;height:20px;accent-color:#24584e}
+
+@media(min-width:761px){#uMenu{display:none}}
+@media(max-height:520px){#uZin,#uZout{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

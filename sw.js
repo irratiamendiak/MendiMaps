@@ -1,7 +1,7 @@
 /* MendiMaps · service worker (modo offline)
    - App y librerías: se guardan al instalar y funcionan sin conexión.
    - Teselas: primero la caché (zonas guardadas + teselas ya vistas), después la red. */
-const SHELL = 'mendimaps-shell-v1';
+const SHELL = 'mendimaps-shell-v2';
 const TILES = 'mendimaps-tiles-v1';      // zonas guardadas (las escribe offline.js)
 const VISITED = 'mendimaps-visited-v1';  // teselas vistas al navegar (máx. MAX_VISITED)
 const MAX_VISITED = 3000;
@@ -20,7 +20,7 @@ const CDN = [
   'https://unpkg.com/leaflet-draw@1.0.4/dist/images/spritesheet-2x.png',
   'https://unpkg.com/leaflet-draw@1.0.4/dist/images/spritesheet.svg'
 ];
-const OPTIONAL = ['./manifest.webmanifest', './offline.js', './icon-192.png', './icon-512.png'];
+const OPTIONAL = ['./manifest.webmanifest', './offline.js', './ui.js', './ui.css', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
