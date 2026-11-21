@@ -1,0 +1,13 @@
+MendiMaps - eguneratzea (instalazioaren lehen konponketa)
+
+GitHubeko MendiMaps biltegian:
+1. Igo ZIP honetako manifest.webmanifest eta sw.js fitxategiak, aurrekoak ordezkatuz.
+2. Igo icons karpeta osoa, barruan icon-192.png eta icon-512.png daudela.
+3. Ez ezabatu edo ordezkatu index.html oraindik.
+
+Ondoren, ireki https://irratiamendiak.github.io/MendiMaps/ Chrome Androiden.
+Chrome-k instalatzeko aukera eskaintzen duen egiaztatu.
+Aplikazioaren interfazea euskaratzeko index.html-ren hurrengo eguneratzea aparte egingo dugu.
+
+Oharra: eguneratze honek instalazioaren konfigurazioa eta aplikazioaren shell cachea prestatzen ditu.
+Ez du bermatzen mapa-eremu guztiak offline erabilgarri egongo direnik; mapa-fitxak aurrez kargatu behar dira.
