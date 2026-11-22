@@ -1,7 +1,7 @@
 /* MendiMaps · service worker
    - App eta liburutegiak: instalatzean gordetzen dira.
    - Lauzak: ONLINE lehenengo (4 s-ko denbora-muga); konexiorik ez badago, gordetako eremuak (mendimaps-tiles-v1). */
-const SHELL = 'mendimaps-shell-v3';
+const SHELL = 'mendimaps-shell-v4';
 const TILES = 'mendimaps-tiles-v1';
 const CDN = [
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
@@ -19,7 +19,7 @@ const CDN = [
   'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js',
   'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.wasm'
 ];
-const OPTIONAL = ['./manifest.webmanifest', './offline.js', './ui.js', './ui.css', './lokala.js', './eu.js', './icon-192.png', './icon-512.png'];
+const OPTIONAL = ['./manifest.webmanifest', './offline.js', './ui.js', './ui.css', './lokala.js', './extras.js', './eu.js', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
