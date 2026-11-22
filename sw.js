@@ -1,11 +1,8 @@
-/* MendiMaps · service worker (modo offline)
-   - App y librerías: se guardan al instalar y funcionan sin conexión.
-   - Teselas: primero la caché (zonas guardadas + teselas ya vistas), después la red. */
-const SHELL = 'mendimaps-shell-v2';
-const TILES = 'mendimaps-tiles-v1';      // zonas guardadas (las escribe offline.js)
-const VISITED = 'mendimaps-visited-v1';  // teselas vistas al navegar (máx. MAX_VISITED)
-const MAX_VISITED = 3000;
-
+/* MendiMaps · service worker
+   - App eta liburutegiak: instalatzean gordetzen dira.
+   - Lauzak: ONLINE lehenengo (4 s-ko denbora-muga); konexiorik ez badago, gordetako eremuak (mendimaps-tiles-v1). */
+const SHELL = 'mendimaps-shell-v3';
+const TILES = 'mendimaps-tiles-v1';
 const CDN = [
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
@@ -18,9 +15,11 @@ const CDN = [
   'https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js',
   'https://unpkg.com/leaflet-draw@1.0.4/dist/images/spritesheet.png',
   'https://unpkg.com/leaflet-draw@1.0.4/dist/images/spritesheet-2x.png',
-  'https://unpkg.com/leaflet-draw@1.0.4/dist/images/spritesheet.svg'
+  'https://unpkg.com/leaflet-draw@1.0.4/dist/images/spritesheet.svg',
+  'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.wasm'
 ];
-const OPTIONAL = ['./manifest.webmanifest', './offline.js', './ui.js', './ui.css', './icon-192.png', './icon-512.png'];
+const OPTIONAL = ['./manifest.webmanifest', './offline.js', './ui.js', './ui.css', './lokala.js', './eu.js', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -37,7 +36,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     for (const k of await caches.keys())
-      if (k.startsWith('mendimaps-shell-') && k !== SHELL) await caches.delete(k);
+      if ((k.startsWith('mendimaps-shell-') && k !== SHELL) || k === 'mendimaps-visited-v1') await caches.delete(k);
     await self.clients.claim();
   })());
 });
@@ -52,31 +51,14 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (isTile(url)) return e.respondWith(tile(req));
-  if (url.origin === location.origin || url.hostname === 'unpkg.com') return e.respondWith(shell(e));
+  if (url.origin === location.origin || url.hostname === 'unpkg.com' || url.hostname === 'cdnjs.cloudflare.com') return e.respondWith(shell(e));
 });
 
 async function tile(req) {
-  const hit = await caches.match(req, { ignoreVary: true });
-  if (hit) return hit;
-  try {
-    const r = await fetch(req.url, { mode: 'cors', credentials: 'omit' });
-    if (r.ok && /^image\//.test(r.headers.get('content-type') || '')) {
-      const c = await caches.open(VISITED);
-      await c.put(req.url, r.clone());
-      trim(c);
-    }
-    return r;
-  } catch (err) {
-    try { return await fetch(req); }                      // servidor sin CORS: se muestra, pero no se guarda
-    catch (err2) { return new Response('', { status: 504 }); }
-  }
-}
-
-let puts = 0;
-async function trim(c) {
-  if (++puts % 100) return;
-  const keys = await c.keys();
-  for (let i = 0; i < keys.length - MAX_VISITED; i++) await c.delete(keys[i]);
+  const cached = async () => (await caches.match(req, { ignoreVary: true })) || new Response('', { status: 504 });
+  if (!navigator.onLine) return cached();
+  try { return await Promise.race([fetch(req), new Promise((_, no) => setTimeout(no, 4000))]); }
+  catch (err) { return cached(); }
 }
 
 function shell(e) {
@@ -86,7 +68,7 @@ function shell(e) {
       if (r.ok) { const cp = r.clone(); caches.open(SHELL).then(c => c.put(req, cp)); }
       return r;
     });
-    if (hit) { if (!cdn) e.waitUntil(net().catch(() => {})); return hit; }   // app: sirve la copia y se actualiza detrás
+    if (hit) { if (!cdn) e.waitUntil(net().catch(() => {})); return hit; }
     return net().catch(() => req.mode === 'navigate' ? caches.match('./index.html') : Response.error());
   });
 }

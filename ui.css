@@ -57,3 +57,5 @@ aside .btn{border-radius:12px;box-shadow:0 1px 2px #0b1f1b14}
 @media(min-width:761px){#uMenu{display:none}}
 @media(max-height:520px){#uZin,#uZout{display:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.leaflet-control-zoom{display:none!important}

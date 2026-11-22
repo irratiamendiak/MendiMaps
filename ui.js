@@ -17,6 +17,7 @@ const I = {
   poly: '<path d="M12 3l8 6-3 11H7L4 9z"/>',
   walk: '<path d="M4 20l5-5 3 3 8-9"/><path d="M15 9h5v5"/>',
   check: '<path d="M5 12l5 5 9-10"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  grid: '<path d="M4 4h16v16H4zM4 12h16M12 4v16"/>',
   install: '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>'
 };
 const svg = p => `<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
@@ -24,12 +25,12 @@ const fab = (id, ic, t, cls = '') => `<button class="fab ${cls}" id="${id}" titl
 const say = t => { const h = $('hint'); if (h) h.textContent = t; };
 
 /* Cabecera */
-const b = document.querySelector('.brand'), sub = b.querySelector('small').textContent.replace(/0\.\d+$/, '0.6');
+const b = document.querySelector('.brand'), sub = 'MAPAK · GPSA · LANDA-LANA · 0.7';
 b.innerHTML = `<svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#d8ed9b"/><path d="M5 24l8-13 5 8 3-4 6 9z" fill="#173b35"/></svg><span>MendiMaps<small>${sub}</small></span>`;
 
 /* Construcción */
 const T = [['pointBtnM', 'pin', 'Punto en mi posición'], ['pointBtn', 'pin', 'Punto tocando el mapa'],
-           ['lineBtn', 'line', 'Línea'], ['polyBtn', 'poly', 'Área'], ['measureGpsBtn', 'walk', 'Medir andando']];
+           ['lineBtn', 'line', 'Línea'], ['polyBtn', 'poly', 'Área'], ['measureGpsBtn', 'walk', 'Medir andando'], ['offGrid', 'grid', 'Deskargatzeko koadrikula']];
 const NAMES = { osm: ['Calles', 'OpenStreetMap'], ign: ['Topográfico', 'IGN raster'], gipuzkoaOrtho: ['Foto aérea', 'Gipuzkoa'] };
 const cards = [...$('basemap').options].map(o => {
   const n = NAMES[o.value] || [o.text, ''];
@@ -69,8 +70,8 @@ $('uFollow').onclick = () => $('followGpsBtn').click();
 $('uZin').onclick = () => $('zoomInBtn').click();
 $('uZout').onclick = () => $('zoomOutBtn').click();
 $('uRec').onclick = () => {
-  const rec = /■|Detener/.test($('trackBtn').textContent);
-  if (!rec && /sin iniciar|detenido|Error/.test($('gpsStatus').textContent)) $('gpsBtn').click();   // el track necesita GPS activo
+  const rec = /■/.test($('trackBtn').textContent);
+  if (!rec && /sin iniciar|detenido|Error|hasi gabe|geldituta|errorea/i.test($('gpsStatus').textContent)) $('gpsBtn').click();   // el track necesita GPS activo
   $('trackBtn').click();
 };
 
@@ -85,7 +86,7 @@ $('uCad').onchange = e => { $('cadastreToggle').checked = e.target.checked; $('c
 $('uOp').oninput = e => { $('cadastreOpacity').value = e.target.value; $('cadastreOpacity').dispatchEvent(new Event('input')); };
 $('uOff').onclick = () => {
   closeAll('aside'); aside.classList.add('open');
-  const h = [...aside.querySelectorAll('h3')].find(x => /sin conexión/i.test(x.textContent)); if (h) h.scrollIntoView({ behavior: 'smooth' });
+  const h = [...aside.querySelectorAll('h3')].find(x => /sin conexión|konexiorik gabe/i.test(x.textContent)); if (h) h.scrollIntoView({ behavior: 'smooth' });
 };
 
 /* Estado: grabación, "Terminar" y seguimiento */
@@ -95,9 +96,9 @@ L.Map.addInitHook(function () {
   this.on('draw:drawstop', () => { drawing = false; sync(); });
 });
 if (L.Draw && L.Draw.Polyline) L.Draw.Polyline.addInitHook(function () { cur = this; });
-const measuring = () => /Terminar/.test($('measureGpsBtn').textContent);
+const measuring = () => /✓/.test($('measureGpsBtn').textContent);
 function sync() {
-  const rec = /■|Detener/.test($('trackBtn').textContent), r = $('uRec');
+  const rec = /■/.test($('trackBtn').textContent), r = $('uRec');
   r.classList.toggle('on', rec); r.innerHTML = svg(rec ? I.stop : I.rec); r.title = rec ? 'Detener track' : 'Grabar track';
   $('uFin').classList.toggle('show', drawing || measuring());
   $('uFin').querySelector('span').textContent = measuring() ? 'Terminar medición' : 'Terminar dibujo';
